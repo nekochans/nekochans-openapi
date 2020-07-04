@@ -76,6 +76,33 @@ paths:
                 $ref: '#/components/schemas/Error'
       operationId: fetchMember
       description: Memberを1件取得する
+  /members:
+    get:
+      summary: fetchMembers
+      tags: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Member'
+            application/xml:
+              schema:
+                type: object
+                properties: {}
+      operationId: fetchMembers
+      description: メンバー一覧を取得する
+      parameters: []
 components:
   schemas:
     Member:
