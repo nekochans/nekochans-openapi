@@ -1,0 +1,59 @@
+openapi: 3.0.0
+info:
+  title: portfolio
+  version: '1.0'
+  contact:
+    name: nekochans
+    url: 'https://github.com/nekochans/portfolio-backend/issues'
+  termsOfService: 'https://github.com/nekochans/portfolio-backend'
+  license:
+    name: MIT
+servers:
+  - url: 'http://localhost:8888'
+paths:
+  '/members/{id}':
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+    get:
+      summary: fetchMember
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+              examples:
+                example-1:
+                  value:
+                    id: 1
+                    githubUserName: keitakn
+                    githubPicture: 'https://avatars3.githubusercontent.com/u/11032365'
+                    cvUrl: 'https://github.com/keitakn/cv'
+      operationId: fetchMember
+      description: Memberを1件取得する
+components:
+  schemas:
+    Member:
+      title: Member
+      type: object
+      x-examples:
+        example-1:
+          id: 1
+          githubUserName: keitakn
+          githubPicture: 'https://avatars3.githubusercontent.com/u/11032365'
+          cvUrl: 'https://github.com/keitakn/cv'
+      properties:
+        id:
+          type: integer
+        githubUserName:
+          type: string
+        githubPicture:
+          type: string
+        cvUrl:
+          type: string
