@@ -35,6 +35,45 @@ paths:
                     githubUserName: keitakn
                     githubPicture: 'https://avatars3.githubusercontent.com/u/11032365'
                     cvUrl: 'https://github.com/keitakn/cv'
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example-1:
+                  value:
+                    code: 404
+                    message: Member Not Found
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+        '500':
+          description: Internal Server Error
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
       operationId: fetchMember
       description: Memberを1件取得する
 components:
@@ -57,3 +96,17 @@ components:
           type: string
         cvUrl:
           type: string
+      description: メンバーモデル
+    Error:
+      title: Error
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      description: エラーモデル
+      x-examples:
+        example-1:
+          code: 404
+          message: Member Not Found
