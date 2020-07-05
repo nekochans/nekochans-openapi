@@ -118,6 +118,42 @@ paths:
       parameters: []
       tags:
         - members
+  /webservices:
+    get:
+      summary: 003 Webサービス一覧参照
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WebService'
+              examples:
+                example-1:
+                  value:
+                    items:
+                      - id: 1
+                        url: 'https://www.mindexer.net'
+                        description: "Qiitaのストックを便利にするサービスです\uD83D\uDC31"
+            application/xml:
+              schema:
+                type: object
+                properties: {}
+            multipart/form-data:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WebService'
+      operationId: get-webservices
 components:
   schemas:
     Member:
