@@ -8,6 +8,7 @@ info:
   termsOfService: 'https://github.com/nekochans/portfolio-backend'
   license:
     name: MIT
+  description: 'https://nekochans.org のバックエンドで利用しているAPI'
 servers:
   - url: 'http://localhost:8888'
 paths:
@@ -19,8 +20,7 @@ paths:
         in: path
         required: true
     get:
-      summary: fetchMember
-      tags: []
+      summary: 001 メンバー参照
       responses:
         '200':
           description: OK
@@ -74,12 +74,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-      operationId: fetchMember
+      operationId: getMemberById
       description: Memberを1件取得する
+      tags:
+        - members
   /members:
     get:
-      summary: fetchMembers
-      tags: []
+      summary: 002 メンバー一覧参照
       responses:
         '200':
           description: OK
@@ -96,13 +97,27 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Member'
+              examples:
+                example-1:
+                  value:
+                    items:
+                      - id: 1
+                        githubUserName: keitakn
+                        githubPicture: 'https://avatars3.githubusercontent.com/u/11032365'
+                        cvUrl: 'https://github.com/keitakn/cv'
+                      - id: 2
+                        githubUserName: kobayashi-m42
+                        githubPicture: 'https://avatars0.githubusercontent.com/u/32682645?s=460&v=4'
+                        cvUrl: 'https://github.com/kobayashi-m42/cv'
             application/xml:
               schema:
                 type: object
                 properties: {}
-      operationId: fetchMembers
+      operationId: getMembers
       description: メンバー一覧を取得する
       parameters: []
+      tags:
+        - members
 components:
   schemas:
     Member:
@@ -114,26 +129,37 @@ components:
           githubUserName: keitakn
           githubPicture: 'https://avatars3.githubusercontent.com/u/11032365'
           cvUrl: 'https://github.com/keitakn/cv'
+      description: メンバーモデル
       properties:
         id:
           type: integer
+          minimum: 1
+          maximum: 18446744073709552000
+          format: int64
         githubUserName:
           type: string
         githubPicture:
           type: string
+          pattern: "^https?://[\\w!\\?/\\+\\-_~=;\\.,\\*&@#\\$%\\(\\)'\\[\\]]+$"
         cvUrl:
           type: string
-      description: メンバーモデル
+          pattern: "^https?://[\\w!\\?/\\+\\-_~=;\\.,\\*&@#\\$%\\(\\)'\\[\\]]+$"
     Error:
       title: Error
       type: object
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
       description: エラーモデル
       x-examples:
         example-1:
           code: 404
           message: Member Not Found
+      properties:
+        code:
+          type: integer
+          example: 0
+          enum:
+            - 400
+            - 404
+            - 500
+            - 503
+        message:
+          type: string
