@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.0.3
 info:
   title: portfolio
-  version: '1.0'
+  version: '1.0.0'
   contact:
     name: nekochans
     url: 'https://github.com/nekochans/portfolio-backend/issues'
@@ -140,7 +140,7 @@ paths:
                     items:
                       - id: 1
                         url: 'https://www.mindexer.net'
-                        description: "Qiitaのストックを便利にするサービスです\uD83D\uDC31"
+                        description: "Qiitaのストックを便利にするサービスです"
             application/xml:
               schema:
                 type: object
