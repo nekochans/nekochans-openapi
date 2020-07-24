@@ -68,6 +68,38 @@ curl -v http://127.0.0.1:3100/members/1
 
 ちなみにError系のレスポンスもちゃんと返ってきます。
 
+## 他プロジェクトからの参照方法
+
+色々な方法がありますが、1つの解決手段としてはGitのサブモジュールを利用する方法があります。
+
+[portfolio-backend](https://github.com/nekochans/portfolio-backend) はこの方法を利用しています。
+
+[portfolio-backend](https://github.com/nekochans/portfolio-backend) でサブモジュールを追加した際の手順を記載しておきます。
+
+```
+# portfolio-backendのルートディレクトリで以下を実行
+git submodule add git@github.com:nekochans/nekochans-openapi.git docs/openapi
+```
+
+これによって [docs/openapi](https://github.com/nekochans/portfolio-backend/tree/master/docs) が本リポジトリを参照するようになります。
+
+サブモジュールはGitのコミットIDを参照しています。
+
+その為、本リポジトリに更新があった場合は参照元である [portfolio-backend](https://github.com/nekochans/portfolio-backend) でも更新を行う必要があります。
+
+更新は通常以下のコマンドで行います。
+
+```
+# portfolio-backendのルートディレクトリで以下を実行
+git submodule update --recursive --remote
+```
+
+これによってコミットIDが最新を指すようになります。
+
+サブモジュールは慣れていないと少々扱いにくく感じるので、以下の記事等を見て基礎知識を身に着けておく事をオススメします。
+
+[Git submoduleの押さえておきたい理解ポイントのまとめ](https://qiita.com/kinpira/items/3309eb2e5a9a422199e9)
+
 ## `openapi.yaml` から各言語のコードを生成する
 
 - [openapi-generator](https://github.com/OpenAPITools/openapi-generator)
