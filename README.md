@@ -16,7 +16,7 @@ APIの設計方針に関しては以下のようなドキュメントを参考�
 - [Web API 設計](https://docs.microsoft.com/ja-jp/azure/architecture/best-practices/api-design)
 - [翻訳: WebAPI 設計のベストプラクティス](https://qiita.com/mserizawa/items/b833e407d89abd21ee72)
 
-`openapi.yaml` には他にも色々と設定を行う必要がありますが、その点に関しては [スキーマファースト開発のためのOpenAPI（Swagger）設計規約](https://future-architect.github.io/articles/20200701/) を参考にしています。
+`openapi.yaml` には他にも色々と設定を行う必要がありますが、その点に関しては [スキーマファースト開発のためのOpenAPI（Swagger）設計規約](https://future-architect.github.io/articles/20200409/) を参考にしています。
 
 ## `openapi.yaml` から各言語のコードを生成する
 
