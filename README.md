@@ -18,6 +18,56 @@ APIの設計方針に関しては以下のようなドキュメントを参考�
 
 `openapi.yaml` には他にも色々と設定を行う必要がありますが、その点に関しては [スキーマファースト開発のためのOpenAPI（Swagger）設計規約](https://future-architect.github.io/articles/20200409/) を参考にしています。
 
+## `openapi.yaml` をGUIで生成する
+
+[OpenAPI Specification](https://swagger.io/specification/) の仕様を参考にしながら `openapi.yaml` を書いていく事になります。
+
+GUIツールを利用すると比較的簡単にyamlファイルを生成出来ます。
+
+公式のツールとしては [Swagger Editor](https://editor.swagger.io/) がありますがオススメは [Stoplight Studio](https://stoplight.io/studio/) です。
+
+https://stoplight.io/studio/ から `Mac App` をダウンロード＆インストールします。
+
+![StoplightStudio1](https://user-images.githubusercontent.com/11032365/88380746-13655d80-cde0-11ea-8739-167b0e642355.png)
+
+`Open Existing Folder` から 目的の `openapi.yaml` があるフォルダを選択します。
+
+## MockServerの起動
+
+[Stoplight Studio](https://stoplight.io/studio/) を利用していれば [Prism](https://stoplight.io/open-source/prism/) 製のMockServerが起動します。
+
+以下のように右下にMockServerへの接続情報があるので、リクエストを送信するとランダムに生成されたレスポンスが返ってきます。
+
+![StoplightStudio2](https://user-images.githubusercontent.com/11032365/88381051-a0101b80-cde0-11ea-971e-56b3939be95c.png)
+
+```
+curl -v http://127.0.0.1:3100/members/1
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to 127.0.0.1 (127.0.0.1) port 3100 (#0)
+> GET /members/1 HTTP/1.1
+> Host: 127.0.0.1:3100
+> User-Agent: curl/7.64.1
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Headers: *
+< Access-Control-Allow-Credentials: true
+< Access-Control-Expose-Headers: *
+< X-Request-Id: dolore labore ex
+< Content-type: application/json
+< Content-Length: 117
+< Date: Fri, 24 Jul 2020 10:09:19 GMT
+< Connection: keep-alive
+<
+* Connection #0 to host 127.0.0.1 left intact
+{"id":8676789581172568000,"githubUserName":"Excepteur id","githubPicture":"http://ab.k)","cvUrl":"http://_ENTBIEwgh"}
+* Closing connection 0
+```
+
+ちなみにError系のレスポンスもちゃんと返ってきます。
+
 ## `openapi.yaml` から各言語のコードを生成する
 
 - [openapi-generator](https://github.com/OpenAPITools/openapi-generator)
