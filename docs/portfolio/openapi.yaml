@@ -39,29 +39,6 @@ paths:
             X-Request-Id:
               schema:
                 type: string
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-              examples:
-                example-400-error:
-                  value:
-                    code: 400
-                    message: string
-                example-error-404:
-                  value:
-                    code: 404
-                    message: string
-                example-error-500:
-                  value:
-                    code: 500
-                    message: string
-          headers:
-            X-Request-Id:
-              schema:
-                type: string
         '404':
           description: Not Found
           content:
@@ -69,7 +46,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                example-1:
+                example-error-404:
                   value:
                     code: 404
                     message: Member Not Found
@@ -77,8 +54,8 @@ paths:
             X-Request-Id:
               schema:
                 type: string
-        '500':
-          description: Internal Server Error
+        '422':
+          description: Unprocessable Entity (WebDAV)
           headers:
             X-Request-Id:
               schema:
@@ -86,7 +63,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                example-error-422:
+                  value:
+                    code: 422
+                    message: Unprocessable Entity
+                    validationErrors:
+                      - key: id
+                        reason: Invalid id format
       operationId: getMemberById
       description: Memberを1件取得する
       tags:
@@ -126,6 +111,21 @@ paths:
               schema:
                 type: object
                 properties: {}
+        '404':
+          description: Not Found
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example-error-404:
+                  value:
+                    code: 404
+                    message: Not Found
       operationId: getMembers
       description: メンバー一覧を取得する
       parameters: []
@@ -168,6 +168,25 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/WebService'
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+        '404':
+          description: Not Found
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example-error-404:
+                  value:
+                    code: 404
+                    message: Not Found
       operationId: getWebServices
       description: WebService一覧を取得する
 components:
@@ -267,6 +286,13 @@ components:
     ValidationError:
       title: ValidationError
       type: object
+      x-examples:
+        example-1:
+          code: 422
+          message: Unprocessable Entity
+          validationErrors:
+            - key: email
+              reason: invalid email format
       properties:
         code:
           type: integer
@@ -275,16 +301,11 @@ components:
           type: string
           example: Unprocessable Entity
         validationErrors:
-          type: object
-          properties:
-            key:
-              type: string
-            reason:
-              type: string
-      x-examples:
-        example-1:
-          code: 422
-          message: Unprocessable Entity
-          validationErrors:
-            key: email
-            reason: invalid email format
+          type: array
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+              reason:
+                type: string
