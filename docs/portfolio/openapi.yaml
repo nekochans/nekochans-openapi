@@ -264,3 +264,27 @@ components:
         - serviceUrl
         - ogpUrl
         - description
+    ValidationError:
+      title: ValidationError
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 422
+        message:
+          type: string
+          example: Unprocessable Entity
+        validationErrors:
+          type: object
+          properties:
+            key:
+              type: string
+            reason:
+              type: string
+      x-examples:
+        example-1:
+          code: 422
+          message: Unprocessable Entity
+          validationErrors:
+            key: email
+            reason: invalid email format
