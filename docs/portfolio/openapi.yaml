@@ -309,3 +309,10 @@ components:
                 type: string
               reason:
                 type: string
+            required:
+              - key
+              - reason
+      required:
+        - code
+        - message
+        - validationErrors
