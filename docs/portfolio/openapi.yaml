@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: portfolio
-  version: '1.0.0'
+  version: 1.0.0
   contact:
     name: nekochans
     url: 'https://github.com/nekochans/portfolio-backend/issues'
@@ -45,6 +45,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+              examples:
+                example-400-error:
+                  value:
+                    code: 400
+                    message: string
+                example-error-404:
+                  value:
+                    code: 404
+                    message: string
+                example-error-500:
+                  value:
+                    code: 500
+                    message: string
           headers:
             X-Request-Id:
               schema:
@@ -139,8 +152,10 @@ paths:
                   value:
                     items:
                       - id: 1
-                        url: 'https://www.mindexer.net'
-                        description: "Qiitaのストックを便利にするサービスです"
+                        name: service name
+                        serviceUrl: 'http://example.com'
+                        ogpUrl: 'http://example.com/ogp.webp'
+                        description: service description
             application/xml:
               schema:
                 type: object
@@ -153,7 +168,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/WebService'
-      operationId: get-webservices
+      operationId: getWebServices
+      description: WebService一覧を取得する
 components:
   schemas:
     Member:
@@ -176,11 +192,11 @@ components:
           type: string
         githubPicture:
           type: string
-          pattern: "^https?://[\\w!\\?/\\+\\-_~=;\\.,\\*&@#\\$%\\(\\)'\\[\\]]+$"
+          pattern: '^https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)''\[\]]+$'
           format: uri
         cvUrl:
           type: string
-          pattern: "^https?://[\\w!\\?/\\+\\-_~=;\\.,\\*&@#\\$%\\(\\)'\\[\\]]+$"
+          pattern: '^https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)''\[\]]+$'
           format: uri
       required:
         - id
@@ -192,13 +208,22 @@ components:
       type: object
       description: エラーモデル
       x-examples:
-        example-1:
+        example-404:
           code: 404
           message: Member Not Found
+        example-400:
+          code: 400
+          message: Bad Request
+        example-500:
+          code: 500
+          message: Internal Server Error
+        example-503:
+          code: 503
+          message: Service Temporarily Unavailable
       properties:
         code:
           type: integer
-          example: 0
+          example: 400
           enum:
             - 400
             - 404
@@ -212,19 +237,30 @@ components:
     WebService:
       title: WebService
       type: object
+      x-examples:
+        example-1:
+          id: 1
+          name: service name
+          serviceUrl: 'http://example.com'
+          ogpUrl: 'http://example.com/ogp.webp'
+          description: service description
       properties:
         id:
           type: integer
           format: int64
           minimum: 1
           maximum: 18446744073709552000
-        url:
+        name:
           type: string
-          format: uri
-          pattern: "^https?://[\\w!\\?/\\+\\-_~=;\\.,\\*&@#\\$%\\(\\)'\\[\\]]+$"
+        serviceUrl:
+          type: string
+        ogpUrl:
+          type: string
         description:
           type: string
       required:
         - id
-        - url
+        - name
+        - serviceUrl
+        - ogpUrl
         - description
