@@ -273,8 +273,10 @@ components:
           type: string
         serviceUrl:
           type: string
+          pattern: '^https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)''''\[\]]+$'
         ogpUrl:
           type: string
+          pattern: '^https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)''''\[\]]+$'
         description:
           type: string
       required:
