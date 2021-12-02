@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: portfolio
-  version: '1.0.0'
+  version: 1.0.0
   contact:
     name: nekochans
     url: 'https://github.com/nekochans/portfolio-backend/issues'
@@ -39,16 +39,6 @@ paths:
             X-Request-Id:
               schema:
                 type: string
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          headers:
-            X-Request-Id:
-              schema:
-                type: string
         '404':
           description: Not Found
           content:
@@ -56,7 +46,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
               examples:
-                example-1:
+                example-error-404:
                   value:
                     code: 404
                     message: Member Not Found
@@ -64,8 +54,8 @@ paths:
             X-Request-Id:
               schema:
                 type: string
-        '500':
-          description: Internal Server Error
+        '422':
+          description: Unprocessable Entity (WebDAV)
           headers:
             X-Request-Id:
               schema:
@@ -73,7 +63,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                example-error-422:
+                  value:
+                    code: 422
+                    message: Unprocessable Entity
+                    validationErrors:
+                      - key: id
+                        reason: Invalid id format
       operationId: getMemberById
       description: Memberを1件取得する
       tags:
@@ -113,6 +111,21 @@ paths:
               schema:
                 type: object
                 properties: {}
+        '404':
+          description: Not Found
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example-error-404:
+                  value:
+                    code: 404
+                    message: Not Found
       operationId: getMembers
       description: メンバー一覧を取得する
       parameters: []
@@ -139,8 +152,10 @@ paths:
                   value:
                     items:
                       - id: 1
-                        url: 'https://www.mindexer.net'
-                        description: "Qiitaのストックを便利にするサービスです"
+                        name: service name
+                        serviceUrl: 'http://example.com'
+                        ogpUrl: 'http://example.com/ogp.webp'
+                        description: service description
             application/xml:
               schema:
                 type: object
@@ -153,7 +168,27 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/WebService'
-      operationId: get-webservices
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+        '404':
+          description: Not Found
+          headers:
+            X-Request-Id:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                example-error-404:
+                  value:
+                    code: 404
+                    message: Not Found
+      operationId: getWebServices
+      description: WebService一覧を取得する
 components:
   schemas:
     Member:
@@ -176,11 +211,11 @@ components:
           type: string
         githubPicture:
           type: string
-          pattern: "^https?://[\\w!\\?/\\+\\-_~=;\\.,\\*&@#\\$%\\(\\)'\\[\\]]+$"
+          pattern: '^https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)''\[\]]+$'
           format: uri
         cvUrl:
           type: string
-          pattern: "^https?://[\\w!\\?/\\+\\-_~=;\\.,\\*&@#\\$%\\(\\)'\\[\\]]+$"
+          pattern: '^https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)''\[\]]+$'
           format: uri
       required:
         - id
@@ -192,13 +227,22 @@ components:
       type: object
       description: エラーモデル
       x-examples:
-        example-1:
+        example-404:
           code: 404
           message: Member Not Found
+        example-400:
+          code: 400
+          message: Bad Request
+        example-500:
+          code: 500
+          message: Internal Server Error
+        example-503:
+          code: 503
+          message: Service Temporarily Unavailable
       properties:
         code:
           type: integer
-          example: 0
+          example: 400
           enum:
             - 400
             - 404
@@ -212,19 +256,65 @@ components:
     WebService:
       title: WebService
       type: object
+      x-examples:
+        example-1:
+          id: 1
+          name: service name
+          serviceUrl: 'http://example.com'
+          ogpUrl: 'http://example.com/ogp.webp'
+          description: service description
       properties:
         id:
           type: integer
           format: int64
           minimum: 1
           maximum: 18446744073709552000
-        url:
+        name:
           type: string
-          format: uri
-          pattern: "^https?://[\\w!\\?/\\+\\-_~=;\\.,\\*&@#\\$%\\(\\)'\\[\\]]+$"
+        serviceUrl:
+          type: string
+          pattern: '^https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)''''\[\]]+$'
+        ogpUrl:
+          type: string
+          pattern: '^https?://[\w!\?/\+\-_~=;\.,\*&@#\$%\(\)''''\[\]]+$'
         description:
           type: string
       required:
         - id
-        - url
+        - name
+        - serviceUrl
+        - ogpUrl
         - description
+    ValidationError:
+      title: ValidationError
+      type: object
+      x-examples:
+        example-1:
+          code: 422
+          message: Unprocessable Entity
+          validationErrors:
+            - key: email
+              reason: invalid email format
+      properties:
+        code:
+          type: integer
+          example: 422
+        message:
+          type: string
+          example: Unprocessable Entity
+        validationErrors:
+          type: array
+          items:
+            type: object
+            properties:
+              key:
+                type: string
+              reason:
+                type: string
+            required:
+              - key
+              - reason
+      required:
+        - code
+        - message
+        - validationErrors
